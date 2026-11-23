@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  # Every push to any branch except main (main only changes through PRs)
+  push:
+    branches-ignore: [main]
+  # Every PR into main or staging: GitHub checks out the *merge result*
+  # of the branch + target, so this tests "will it still work after merging?"
+  pull_request:
+    branches: [main, staging]
+
+# Cancel an older run on the same branch when a new push arrives
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  build:
+    name: Typecheck & build   # mark this as the required check in the ruleset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate Next.js route types
+        run: npx next typegen
+
+      - name: TypeScript
+        run: npm run types:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Next.js build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          # If the build needs env vars, add them as repo secrets and map them here, e.g.:
+          # NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
