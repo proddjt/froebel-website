@@ -1,6 +1,12 @@
 "use client";
 
-import { ColorSwatch, Group, Select, useMantineColorScheme, type MantineColorScheme } from "@mantine/core";
+import {
+  ColorSwatch,
+  Group,
+  Select,
+  useMantineColorScheme,
+  type MantineColorScheme,
+} from "@mantine/core";
 import { accents, getAccent, isAccentId } from "@/demo/accents";
 import { useMantineAccent } from "./Providers";
 
@@ -27,7 +33,10 @@ export function ThemeControls() {
         leftSection={<ColorSwatch color={getAccent(accent).swatch} size={14} />}
         renderOption={({ option }) => (
           <Group gap="xs">
-            <ColorSwatch color={isAccentId(option.value) ? getAccent(option.value).swatch : "gray"} size={14} />
+            <ColorSwatch
+              color={isAccentId(option.value) ? getAccent(option.value).swatch : "gray"}
+              size={14}
+            />
             {option.label}
           </Group>
         )}

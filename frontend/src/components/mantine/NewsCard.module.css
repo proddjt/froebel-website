@@ -2,7 +2,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .card:hover,

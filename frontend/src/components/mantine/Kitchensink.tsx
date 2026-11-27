@@ -32,7 +32,7 @@ export function Kitchensink() {
           <Title order={1} fw={900}>
             Mantine kitchen sink
           </Title>
-          <Text c="dimmed">Change the colour and mode from the header: everything below follows.</Text>
+          <Text c="dimmed">All components use the shared theme from src/theme.ts.</Text>
         </div>
 
         <Demo title="Buttons">
@@ -54,11 +54,21 @@ export function Kitchensink() {
         <Demo title="Badges">
           <Group gap="xs">
             <Badge>Accent</Badge>
-            <Badge color="orange" variant="light">Kindergarten</Badge>
-            <Badge color="grape" variant="light">Middle School</Badge>
-            <Badge color="pink" variant="light">Events</Badge>
-            <Badge color="green" variant="dot">Published</Badge>
-            <Badge color="red" variant="outline">Urgent</Badge>
+            <Badge color="orange" variant="light">
+              Kindergarten
+            </Badge>
+            <Badge color="grape" variant="light">
+              Middle School
+            </Badge>
+            <Badge color="pink" variant="light">
+              Events
+            </Badge>
+            <Badge color="green" variant="dot">
+              Published
+            </Badge>
+            <Badge color="red" variant="outline">
+              Urgent
+            </Badge>
           </Group>
         </Demo>
 
@@ -75,8 +85,17 @@ export function Kitchensink() {
         <Demo title="Form">
           <SimpleGrid cols={{ base: 1, md: 2 }}>
             <TextInput label="Parent name" placeholder="Maria Rossi" withAsterisk />
-            <TextInput label="Email" type="email" placeholder="maria@example.com" description="We will only use it to reply." />
-            <Textarea label="Message" placeholder="I'd like to book a visit…" style={{ gridColumn: "1 / -1" }} />
+            <TextInput
+              label="Email"
+              type="email"
+              placeholder="maria@example.com"
+              description="We will only use it to reply."
+            />
+            <Textarea
+              label="Message"
+              placeholder="I'd like to book a visit…"
+              style={{ gridColumn: "1 / -1" }}
+            />
             <Checkbox defaultChecked label="I accept the privacy policy" />
             <Switch defaultChecked label="Subscribe to the newsletter" />
           </SimpleGrid>
@@ -89,9 +108,15 @@ export function Kitchensink() {
               <Tabs.Tab value="middle">Middle School</Tabs.Tab>
               <Tabs.Tab value="after">After school</Tabs.Tab>
             </Tabs.List>
-            <Tabs.Panel value="kinder" pt="md">Play-based learning, music and outdoor time.</Tabs.Panel>
-            <Tabs.Panel value="middle" pt="md">Small classes, labs and languages.</Tabs.Panel>
-            <Tabs.Panel value="after" pt="md">Sports, choir and homework club until 18:00.</Tabs.Panel>
+            <Tabs.Panel value="kinder" pt="md">
+              Play-based learning, music and outdoor time.
+            </Tabs.Panel>
+            <Tabs.Panel value="middle" pt="md">
+              Small classes, labs and languages.
+            </Tabs.Panel>
+            <Tabs.Panel value="after" pt="md">
+              Sports, choir and homework club until 18:00.
+            </Tabs.Panel>
           </Tabs>
         </Demo>
 

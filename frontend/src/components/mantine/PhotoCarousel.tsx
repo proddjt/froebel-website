@@ -8,7 +8,9 @@ import type { Slide } from "@/demo/content";
 
 export function PhotoCarousel({ slides }: { slides: Slide[] }) {
   // Created once and kept stable across renders
-  const [autoplay] = useState(() => Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true }));
+  const [autoplay] = useState(() =>
+    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true }),
+  );
 
   return (
     <Carousel

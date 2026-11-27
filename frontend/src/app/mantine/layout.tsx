@@ -1,21 +1,30 @@
+import "@fontsource-variable/nunito";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import type { Metadata } from "next";
-import { ColorSchemeScript } from "@mantine/core";
-import { MantineDemoProvider } from "@/components/mantine/Providers";
+import { notFound } from "next/navigation";
+import { mantineHtmlProps } from "@mantine/core";
+import { Providers } from "@/components/Providers";
 import { SiteHeader } from "@/components/mantine/SiteHeader";
 
-export const metadata: Metadata = { title: "Froebel School — Mantine" };
+export const metadata: Metadata = {
+  title: "Kitchen sink (dev only)",
+  robots: { index: false, follow: false },
+};
 
+// Development reference only: in production builds /mantine returns 404.
 export default function MantineLayout({ children }: LayoutProps<"/mantine">) {
+  if (process.env.NODE_ENV === "production") notFound();
+
   return (
-    <>
-      {/* Sets data-mantine-color-scheme on <html> before paint to avoid a flash */}
-      <ColorSchemeScript defaultColorScheme="auto" />
-      <MantineDemoProvider>
-        <SiteHeader />
-        <main>{children}</main>
-      </MantineDemoProvider>
-    </>
+    // Light only: mantineHtmlProps already sets the colour scheme attribute.
+    <html lang="en" {...mantineHtmlProps}>
+      <body>
+        <Providers>
+          <SiteHeader />
+          <main>{children}</main>
+        </Providers>
+      </body>
+    </html>
   );
 }
