@@ -2,18 +2,26 @@
   "name": "froebel-website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
-    "node": ">=26"
+    "node": ">=26.13.1"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:vercel": "if [ \"$VERCEL_TARGET_ENV\" = production ]; then payload migrate; fi && next build",
     "start": "next start",
     "types:check": "tsc --noEmit",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "payload": "payload",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "migrate": "payload migrate",
+    "migrate:create": "payload migrate:create",
+    "migrate:status": "payload migrate:status"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.3.0",
@@ -23,14 +31,22 @@
     "@mantine/hooks": "^9.8.2",
     "@mantine/modals": "^9.8.2",
     "@mantine/notifications": "^9.8.2",
+    "@payloadcms/db-postgres": "^3.94.2",
+    "@payloadcms/next": "^3.94.2",
+    "@payloadcms/richtext-lexical": "^3.94.2",
+    "@payloadcms/storage-s3": "^3.94.2",
+    "@payloadcms/translations": "^3.94.2",
     "dayjs": "^1.11.23",
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "graphql": "^16.15.0",
     "lucide-react": "^1.82.0",
     "next": "16.4.6",
+    "payload": "^3.94.2",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.11",
@@ -46,5 +62,10 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "3.10.1",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true
   }
 }
