@@ -1,0 +1,9 @@
+# Always store and check out text files with LF line endings (also on Windows),
+# so they match Prettier's "endOfLine": "lf".
+* text=auto eol=lf
+
+*.ico binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff2 binary
