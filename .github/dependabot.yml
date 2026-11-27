@@ -1,0 +1,64 @@
+# Dependabot: keeps dependencies up to date through pull requests.
+# Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Safety model:
+#   - Every update arrives as a PR and must pass the "Typecheck & build" CI check.
+#   - Cooldown: a new release has to be out for a few days before it's proposed,
+#     so broken or compromised releases are usually pulled before they reach us.
+#     (Security updates ignore the cooldown and arrive straight away.)
+#   - Packages that must move together are grouped into one PR.
+#   - Patch/minor PRs auto-merge once CI passes and the code owner approves
+#     (see .github/workflows/dependabot-auto-merge.yml). Major bumps never auto-merge.
+
+version: 2
+updates:
+  # ---------- npm packages of the Next.js site ----------
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Rome"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 5
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+    ignore:
+      # @types/node must match the Node version used in CI (26), so bump its major by hand.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+    # A package goes into the first group it matches.
+    groups:
+      # next and eslint-config-next are pinned to the same exact version
+      nextjs:
+        patterns: ["next", "eslint-config-next"]
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      mantine:
+        patterns: ["@mantine/*", "postcss-preset-mantine"]
+      embla:
+        patterns: ["embla-carousel*"]
+      # everything else: one weekly PR for the small, low-risk updates
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+
+  # ---------- GitHub Actions used in .github/workflows ----------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "06:00"
+      timezone: "Europe/Rome"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "ci"
+    groups:
+      github-actions:
+        patterns: ["*"]
