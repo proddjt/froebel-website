@@ -2,6 +2,9 @@
   "name": "froebel-website",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=26.13.1"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -31,7 +34,8 @@
     "next": "16.4.6",
     "payload": "^3.94.2",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -47,5 +51,10 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "3.10.1",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true
   }
 }
