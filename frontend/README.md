@@ -2,18 +2,18 @@
 
 Everything you need to go from a fresh clone to a running site on `http://localhost:3000`.
 
-The frontend is a **Next.js 16** app (App Router, React 19, TypeScript) styled with **Mantine 9**, with **Payload 3** as the CMS (PostgreSQL database). It lives in the `frontend/` folder of the repo; all commands below run from there.
+The frontend is a **Next.js 16** app (App Router, React 19, TypeScript) styled with **Mantine 9**, with **Payload 3** as the CMS (PostgreSQL database and file storage on Supabase). It lives in the `frontend/` folder of the repo; all commands below run from there.
 
 ---
 
 ## 1. Prerequisites
 
-| Tool       | Version                                                                                   | Check with       |
-| ---------- | ----------------------------------------------------------------------------------------- | ---------------- |
-| Node.js    | **26.13.1 or newer** (required by Payload 3.94; it also accepts `^22.23.5` or `^24.22.3`) | `node -v`        |
-| npm        | comes with Node                                                                           | `npm -v`         |
-| PostgreSQL | a local server for the Payload database                                                   | `psql --version` |
-| Git        | any recent version                                                                        | `git --version`  |
+| Tool     | Version                                                                                   | Check with      |
+| -------- | ----------------------------------------------------------------------------------------- | --------------- |
+| Node.js  | **26.13.1 or newer** (required by Payload 3.94; it also accepts `^22.23.5` or `^24.22.3`) | `node -v`       |
+| npm      | comes with Node                                                                           | `npm -v`        |
+| Supabase | access to the `froebel-payload-dev` project (ask a maintainer)                            | —               |
+| Git      | any recent version                                                                        | `git --version` |
 
 The required Node version is also set in `package.json` (`engines`), so npm warns if yours is too old.
 
@@ -81,9 +81,30 @@ Other editors work too, as long as they use the project's Prettier and ESLint co
 
 ## 5. Environment variables
 
-Payload reads its settings (the PostgreSQL connection string and its secret) from `frontend/.env`. All `.env*` files are git-ignored, so each developer creates their own; put local-only overrides in `frontend/.env.local`. Make sure the database named in the connection string exists on your PostgreSQL server.
+Copy `frontend/.env.example` to `frontend/.env` and fill it in. The example file explains every variable and where to find it in Supabase.
 
-If the build needs environment variables, add them as GitHub repo secrets and map them in `.github/workflows/ci.yml`.
+There are two Supabase projects:
+
+| Project               | Used by                                                          |
+| --------------------- | ---------------------------------------------------------------- |
+| `froebel-payload-dev` | your local `.env` and Vercel **Preview** (PRs, `vercel/staging`) |
+| `froebel-payload`     | Vercel **Production** only: never put its values in a local file |
+
+All `.env*` files except `.env.example` are git-ignored. Put local-only overrides in `frontend/.env.local`.
+
+### Changing collections (database schema)
+
+While developing, `npm run dev` applies collection changes directly to `froebel-payload-dev`, and regenerates `src/payload-types.ts`. Production changes only through migrations. Before committing a schema change:
+
+```bash
+npm run generate:types       # make sure src/payload-types.ts is current
+npm run generate:importmap   # only if you added custom admin components or plugins
+npm run migrate:create       # writes a migration to src/migrations/
+```
+
+Commit the collection files, `src/payload-types.ts`, the new migration and `importMap.js` if it changed. Production deploys run `payload migrate` before building (see `vercel.json` and the `build:vercel` script), so the migration is applied when the change reaches `main`. Preview deploys don't run migrations.
+
+Content (pages, news, images) lives in the database, not in git: nothing to commit for it.
 
 ## 6. Start the dev server
 
@@ -152,6 +173,8 @@ frontend/
 - **Port 3000 already in use** → `npm run dev -- -p 3001`.
 - **Weird stale build behaviour** → stop the server, delete the `.next/` folder, run `npm run dev` again.
 - **Dependency errors after pulling** → someone changed the lock file; run `npm ci` again.
+- **`TypeError: Illegal constructor` from `undici` when running a `payload` command** → `package.json` must keep `"type": "module"`. Without it the Payload CLI loads `undici` twice through its bundled `tsx` and crashes ([payload#19475](https://github.com/payloadcms/payload/issues/19475)).
+- **`payload migrate:status` lists migrations as not run on `froebel-payload-dev`** → expected: the dev database is kept in sync by `npm run dev`, not by migrations. Don't run `payload migrate` against it.
 - **Next.js API looks different from what you know** → this is Next 16; check the bundled docs in `node_modules/next/dist/docs/`.
 
 ## Learn more
