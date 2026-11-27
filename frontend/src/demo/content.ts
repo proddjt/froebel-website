@@ -2,14 +2,14 @@
 // so the libraries can be compared on identical data.
 
 export const school = {
-  name: "Froebel School",
-  tagline: "Kindergarten & Middle School",
+  name: "Istituto Froebel",
+  tagline: "Nido · Infanzia · Primaria",
   motto: "Learning through play, growing through curiosity.",
   intro:
     "A welcoming community where children from 3 to 14 explore, create and discover — guided by teachers who know every child by name.",
-  address: "Via dei Giardini 12, Roma",
-  phone: "+39 06 1234 5678",
-  email: "info@froebelschool.example",
+  address: "Via Giacomo Leopardi 24, 80020 Crispano (NA)",
+  phone: "+39 081 831 6118",
+  email: "froebel@libero.it",
 };
 
 export type Slide = {
@@ -92,8 +92,7 @@ export const news: NewsItem[] = [
   {
     id: "sports-day",
     title: "Inter-school volleyball tournament",
-    excerpt:
-      "Our 3rd year team reached the semi-finals! Thanks to everyone who came to cheer.",
+    excerpt: "Our 3rd year team reached the semi-finals! Thanks to everyone who came to cheer.",
     date: "2026-10-29",
     category: "Middle School",
     image: "/demo/sports.svg",

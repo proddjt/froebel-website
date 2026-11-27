@@ -1,6 +1,6 @@
 // Theme colours offered by the colour switcher, mapped to Mantine palette names.
 
-export type AccentId = "blue" | "teal" | "green" | "orange" | "pink" | "purple" | "red";
+export type AccentId = "cyan" | "blue" | "teal" | "green" | "orange" | "pink" | "purple" | "red";
 
 export const accents: {
   id: AccentId;
@@ -8,6 +8,7 @@ export const accents: {
   swatch: string; // preview colour for the picker
   mantine: string; // Mantine primaryColor
 }[] = [
+  { id: "cyan", label: "Cyan", swatch: "#0b7285", mantine: "cyan" },
   { id: "blue", label: "Blue", swatch: "#2563eb", mantine: "blue" },
   { id: "teal", label: "Teal", swatch: "#0d9488", mantine: "teal" },
   { id: "green", label: "Green", swatch: "#16a34a", mantine: "green" },
@@ -17,7 +18,7 @@ export const accents: {
   { id: "red", label: "Red", swatch: "#dc2626", mantine: "red" },
 ];
 
-export const defaultAccent: AccentId = "blue";
+export const defaultAccent: AccentId = "cyan";
 
 export function isAccentId(value: unknown): value is AccentId {
   return accents.some((a) => a.id === value);
