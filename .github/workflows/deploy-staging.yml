@@ -1,0 +1,63 @@
+name: Deploy PR to Staging
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  deploy-staging:
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/deploy-staging')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Controlla permessi utente
+        id: auth
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: context.actor
+            });
+            if (!['admin', 'write'].includes(perm.permission)) {
+              core.setFailed('Non hai i permessi di scrittura per avviare il deploy su staging.');
+            }
+
+      - name: Recupera dettagli della PR
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('head_ref', pr.data.head.ref);
+            core.setOutput('head_sha', pr.data.head.sha);
+
+      - name: Checkout della branch della PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.head_sha }}
+          fetch-depth: 0
+
+      - name: Push forzato sulla branch vercel/staging
+        run: |
+          git push origin HEAD:refs/heads/vercel/staging --force
+
+      - name: Conferma nei commenti della PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🚀 Codice della PR pushato su `staging`! Il deploy su Vercel è in corso.'
+            });
