@@ -20,13 +20,18 @@
     "@mantine/hooks": "^9.8.2",
     "@mantine/modals": "^9.8.2",
     "@mantine/notifications": "^9.8.2",
+    "@payloadcms/db-postgres": "^3.94.2",
+    "@payloadcms/next": "^3.94.2",
+    "@payloadcms/richtext-lexical": "^3.94.2",
     "dayjs": "^1.11.23",
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "graphql": "^16.15.0",
     "next": "16.4.6",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "payload": "^3.94.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@types/node": "^20",
