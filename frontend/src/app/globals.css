@@ -1,4 +1,0 @@
-/* Kept intentionally minimal: each UI library ships its own reset. */
-body {
-  margin: 0;
-}

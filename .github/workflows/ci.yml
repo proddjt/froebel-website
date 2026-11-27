@@ -43,6 +43,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Formatting (CSS, JSON, Markdown, …)
+        run: npm run format:check
+
       - name: Next.js build
         run: npm run build
         env:

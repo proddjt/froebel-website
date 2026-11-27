@@ -3,7 +3,6 @@
 import { Anchor, Box, Container, Group, Text, ThemeIcon } from "@mantine/core";
 import NextLink from "next/link";
 import { school } from "@/demo/content";
-import { ThemeControls } from "./ThemeControls";
 
 export function SiteHeader() {
   return (
@@ -49,8 +48,6 @@ export function SiteHeader() {
               Kitchen sink
             </Anchor>
           </Group>
-
-          <ThemeControls />
         </Group>
       </Container>
     </Box>

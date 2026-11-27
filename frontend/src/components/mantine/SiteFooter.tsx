@@ -5,7 +5,11 @@ import { school } from "@/demo/content";
 
 export function SiteFooter() {
   return (
-    <Box component="footer" style={{ borderTop: "1px solid var(--mantine-color-default-border)" }} bg="var(--mantine-color-default-hover)">
+    <Box
+      component="footer"
+      style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}
+      bg="var(--mantine-color-default-hover)"
+    >
       <Container size="lg" py={40}>
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl">
           <Stack gap={4}>
