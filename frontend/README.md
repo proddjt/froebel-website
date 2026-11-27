@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Froebel website (frontend)
 
-## Getting Started
+Everything you need to go from a fresh clone to a running site on `http://localhost:3000`.
 
-First, run the development server:
+The frontend is a **Next.js 16** app (App Router, React 19, TypeScript) styled with **Mantine 9**, with **Payload 3** as the CMS (PostgreSQL database). It lives in the `frontend/` folder of the repo; all commands below run from there.
+
+---
+
+## 1. Prerequisites
+
+| Tool       | Version                                                                                   | Check with       |
+| ---------- | ----------------------------------------------------------------------------------------- | ---------------- |
+| Node.js    | **26.13.1 or newer** (required by Payload 3.94; it also accepts `^22.23.5` or `^24.22.3`) | `node -v`        |
+| npm        | comes with Node                                                                           | `npm -v`         |
+| PostgreSQL | a local server for the Payload database                                                   | `psql --version` |
+| Git        | any recent version                                                                        | `git --version`  |
+
+The required Node version is also set in `package.json` (`engines`), so npm warns if yours is too old.
+
+On Windows we use [nvm-windows](https://github.com/coreybutler/nvm-windows) to install and switch Node versions:
+
+```powershell
+nvm install 26.13.1
+nvm use 26.13.1
+```
+
+If `node` isn't recognized after `nvm use`, check that `C:\nvm4w\nodejs` is in your PATH and that it is a link to the installed version (`Get-Item C:\nvm4w\nodejs | Select-Object LinkType, Target`).
+
+> Use **npm**, not yarn/pnpm/bun — the repo is locked with `package-lock.json` and CI runs `npm ci`.
+
+## 2. Clone the repository
+
+```bash
+git clone <repo-url> froebel-website
+cd froebel-website/frontend
+```
+
+## 3. Install dependencies
+
+```bash
+npm ci
+```
+
+`npm ci` installs exactly what's in `package-lock.json` (what CI does). Use `npm install` only when you are intentionally adding or upgrading a package, and commit the updated lock file.
+
+Packages that run install scripts (such as `esbuild`) must be approved in `allowScripts` in `package.json`. If npm warns about a new one, review it with `npm install-scripts ls` and approve it with `npm install-scripts approve <pkg>`.
+
+## 4. Editor setup (VS Code)
+
+Formatting is handled by **Prettier** and checked by **ESLint**: unformatted code is an ESLint error (`prettier/prettier`), and CI fails on it. To format automatically on save, install these extensions:
+
+| Extension                                                                                               | ID                          | Why                                                                                                   |
+| ------------------------------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [Prettier – Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) | `esbenp.prettier-vscode`    | **Required.** Formats files on save using `.prettierrc.json`.                                         |
+| [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)                    | `dbaeumer.vscode-eslint`    | **Required.** Shows lint and formatting errors while you type and fixes them on save.                 |
+| [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)           | `editorconfig.editorconfig` | Recommended. Applies `.editorconfig` (indentation, LF line endings) to files Prettier doesn't format. |
+
+Quick install: open the **Extensions** view (`Ctrl+Shift+X`), type `@recommended` and install everything under **Workspace Recommendations** (they come from `.vscode/extensions.json`). From a terminal:
+
+```bash
+code --install-extension esbenp.prettier-vscode
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension editorconfig.editorconfig
+```
+
+The project settings in `.vscode/settings.json` then take care of the rest: format on save with Prettier, ESLint auto-fix on save, LF line endings, and the workspace TypeScript version. After installing, reload the window (`Ctrl+Shift+P` → **Developer: Reload Window**).
+
+**Check that it works:** add a few blank lines at the start of a function **without saving**: ESLint should underline them in red (`prettier/prettier`). Saving the file removes them. If nothing is underlined, open **View → Output → ESLint** to see why.
+
+> Format-on-save doesn't run when **Auto Save** is set to `afterDelay`. Use `Ctrl+S`, or set Auto Save to `onFocusChange` / `onWindowChange`.
+
+### Formatting from the terminal
+
+```bash
+npm run format         # format every file with Prettier
+npm run format:check   # check only (what CI runs)
+npm run lint:fix       # apply ESLint auto-fixes (formatting included)
+```
+
+Other editors work too, as long as they use the project's Prettier and ESLint configs (`.prettierrc.json`, `eslint.config.mjs`).
+
+## 5. Environment variables
+
+Payload reads its settings (the PostgreSQL connection string and its secret) from `frontend/.env`. All `.env*` files are git-ignored, so each developer creates their own; put local-only overrides in `frontend/.env.local`. Make sure the database named in the connection string exists on your PostgreSQL server.
+
+If the build needs environment variables, add them as GitHub repo secrets and map them in `.github/workflows/ci.yml`.
+
+## 6. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>. Edits hot-reload automatically.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> The first `npm run dev` may (re)write `AGENTS.md` — that's generated by Next.js. Commit it as-is.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 7. Checks to run before pushing
 
-## Learn More
+These mirror the CI pipeline, so if they pass locally CI should pass too:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx next typegen      # generate route types (LayoutProps<"/">, etc.)
+npm run types:check   # TypeScript, no emit
+npm run lint          # ESLint (includes Prettier formatting for JS/TS)
+npm run format:check  # Prettier check for every file (CSS, JSON, Markdown too)
+npm run build         # production build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To try the production build locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+npm run start         # serves on http://localhost:3000
+```
 
-## Deploy on Vercel
+## 8. Git workflow
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Work on a feature branch — **`main` only changes through pull requests**.
+- CI (`.github/workflows/ci.yml`) runs on every push to non-`main` branches and on every PR into `main` or `staging`; the **"Typecheck & build"** job must pass before merging.
+- Code owners are set in `.github/CODEOWNERS`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git checkout -b feature/my-change
+# ...work, run the checks above...
+git push -u origin feature/my-change
+# then open a PR into staging or main
+```
+
+## 9. Project layout
+
+```
+frontend/
+├── src/
+│   ├── app/                 # App Router routes & layouts
+│   │   ├── layout.tsx       # Root layout (Nunito font, metadata)
+│   │   ├── page.tsx         # "/" → redirects to /mantine
+│   │   └── mantine/         # Mantine site + kitchensink
+│   ├── components/mantine/  # Header, footer, carousel, news cards, providers…
+│   └── demo/                # Placeholder content & accent-colour helpers
+├── public/                  # Static assets (images, icons)
+├── next.config.ts           # React Compiler, cacheComponents, partialPrefetching
+├── postcss.config.mjs       # Mantine PostCSS preset + breakpoint variables
+└── package.json
+```
+
+## 10. Troubleshooting
+
+- **`EBADENGINE` warnings or odd Payload errors** → your Node is too old; see [Prerequisites](#1-prerequisites).
+- **`ERESOLVE` peer-dependency errors when adding Payload packages** → update the package it names (often `react` / `react-dom`) instead of using `--force` or `--legacy-peer-deps`.
+- **`LayoutProps` / route-type errors** → run `npx next typegen` (or just start `npm run dev`, which generates them).
+- **Port 3000 already in use** → `npm run dev -- -p 3001`.
+- **Weird stale build behaviour** → stop the server, delete the `.next/` folder, run `npm run dev` again.
+- **Dependency errors after pulling** → someone changed the lock file; run `npm ci` again.
+- **Next.js API looks different from what you know** → this is Next 16; check the bundled docs in `node_modules/next/dist/docs/`.
+
+## Learn more
+
+- [Next.js documentation](https://nextjs.org/docs)
+- [Payload documentation](https://payloadcms.com/docs)
+- [Mantine documentation](https://mantine.dev)
